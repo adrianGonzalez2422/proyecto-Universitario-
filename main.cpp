@@ -66,8 +66,8 @@ struct Enemy {
         } else if (type == EnemyType::Tank) {
             if (std::abs(dir.y) > std::abs(dir.x)) rowOffset = (dir.y > 0) ? 0 : 3;
             else rowOffset = (dir.x > 0) ? 1 : 2;
-            if (dir.x > 0) sprite.setScale(-baseScale, baseScale); 
-            else if (dir.x < 0) sprite.setScale(baseScale, baseScale);
+            if (dir.x > 0) sprite.setScale(-baseScale,baseScale); 
+            else if (dir.x < 0) sprite.setScale(baseScale,-baseScale);
         }
         sprite.setTextureRect(sf::IntRect(currentFrame * frameWidth, rowOffset * frameHeight, frameWidth, frameHeight));
     }
@@ -98,8 +98,7 @@ struct Player {
             else rowOffset = (moveDir.x > 0) ? 2 : 3;
             animationTimer += dt;
             if (animationTimer >= 0.1f) { animationTimer = 0.0f; currentFrame = (currentFrame + 1) % 4; }
-            if (moveDir.x > 0) sprite.setScale(baseScale, baseScale);
-            else if (moveDir.x > 0) sprite.setScale(-baseScale, baseScale);
+            sprite.setScale(baseScale, baseScale);
         } else { currentFrame = 0; }
         sprite.setTextureRect(sf::IntRect(currentFrame * frameWidth, rowOffset * frameHeight, frameWidth, frameHeight));
     }
@@ -126,7 +125,7 @@ int main() {
 
     // Audio
     sf::Music menuMusic, actionMusic;
-    menuMusic.openFromFile("menuTheme.ogg"); actionMusic.openFromFile("music.ogg");
+    menuMusic.openFromFile("assets/audio/menuTheme.ogg"); actionMusic.openFromFile("assets/audio/music.ogg");
     menuMusic.setLoop(true); actionMusic.setLoop(true);
     menuMusic.setVolume(40.f); actionMusic.setVolume(30.f);
     menuMusic.play();
@@ -134,25 +133,25 @@ int main() {
     sf::SoundBuffer shootBuff, hitBuff, gameOverBuff;
     sf::Sound shootSound, hitSound, gameOverSound;
    
-    if (gameOverBuff.loadFromFile("gameOver.wav")) gameOverSound.setBuffer(gameOverBuff);
+    if (gameOverBuff.loadFromFile("assets/audio/gameOver.wav")) gameOverSound.setBuffer(gameOverBuff);
 
     bool gameOverSoundPlayed = false;
 
     // Texturas
     std::map<EnemyType, sf::Texture> enemyTextures;
     sf::Texture texMenu, texGem, texGrass;
-    texMenu.loadFromFile("menu_bg.png");
-    enemyTextures[EnemyType::Normal].loadFromFile("normal.png");
-    enemyTextures[EnemyType::Tank].loadFromFile("tank.png");
-    enemyTextures[EnemyType::Boss].loadFromFile("Boss.png");
-    texGem.loadFromFile("gem.png");
-    texGrass.loadFromFile("Grass.png");
+    texMenu.loadFromFile("assets/textures/menu_bg.png");
+    enemyTextures[EnemyType::Normal].loadFromFile("assets/textures/normal.png");
+    enemyTextures[EnemyType::Tank].loadFromFile("assets/textures/tank.png");
+    enemyTextures[EnemyType::Boss].loadFromFile("assets/textures/Boss.png");
+    texGem.loadFromFile("assets/textures/gem.png");
+    texGrass.loadFromFile("assets/textures/Grass.png");
     texGrass.setRepeated(true);
 
     sf::Font font;
-    bool hasFont = font.loadFromFile("/home/adrian/CONTRA/pixeloid_sans/PixeloidSans-Bold.ttf");
+    bool hasFont = font.loadFromFile("assets/fonts/PixeloidSans-Bold.ttf");
 
-    Player p; p.load("player.png"); p.reset();
+    Player p; p.load("assets/textures/player.png"); p.reset();
     sf::Sprite spriteMenu(texMenu);
     spriteMenu.setScale(800.f / texMenu.getSize().x, 600.f / texMenu.getSize().y);
     sf::Sprite bg(texGrass);
@@ -355,31 +354,7 @@ int main() {
          
          
 
-if (state == GameState::MainMenu) {
-    window.setView(window.getDefaultView());
-    window.draw(spriteMenu);
 
-    if (hasFont) {
-      
-        float posX = 150.0f; 
-        float posY = 350.0f;
-
-       
-        float time = gameTimer.getElapsedTime().asSeconds();
-        
-       
-        float offsetY = std::sin(time * 2.5f) * 12.0f; 
-        
-      
-        int alpha = static_cast<int>((std::sin(time * 3.5f) + 1.0f) * 0.5f * 255.0f);
-
-       
-        uiMessage.setString("ESCRIBE TU NOMBRE: " + playerName + "_\n\n[ESPACIO] EMPEZAR\n\nRECORD: " + highScoreName + " - " + std::to_string(highScore));
-        uiMessage.setFillColor(sf::Color(255, 255, 255, alpha)); 
-        uiMessage.setPosition(posX, posY + offsetY);           
-        window.draw(uiMessage);
-    }
-}
         
             window.setView(sf::View(p.sprite.getPosition(), { 800, 600 }));
             window.draw(bg);
